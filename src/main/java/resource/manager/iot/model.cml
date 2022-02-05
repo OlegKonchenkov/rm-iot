@@ -21,7 +21,7 @@ ContextMap InsuranceContextMap {
 
 	/* Define the context relationships: */
 	TelemetryDataAcquisitionContext -> MachineContext {
-		implementationTechnology = "RESTfulHTTP"
+		implementationTechnology = "MQTT"
 	}
 
 	ResourceManagerUIContext <- UserContext {
@@ -48,11 +48,11 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 	
-	ResourceManagerUIContext -> CustomerRelationManagementContext {
+	ResourceManagerUIContext <- CustomerRelationManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	RemoteMaintenanceAndTrainingContext <- TicketingContext {
+	RemoteMaintenanceAndTrainingContext -> ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -92,105 +92,105 @@ ContextMap InsuranceContextMap {
 /* Bounded Context Definitions */
 BoundedContext RemoteMaintenanceAndTrainingContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context "
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext CustomerRelationManagementContext implements UserSupportDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext TicketingContext implements UserSupportDomain {
 	type = SYSTEM
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext AuthenticationContext implements UserDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext UserContext implements UserDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext MachineContext implements MachineDomain {
 	type = SYSTEM
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext TelemetryDataAcquisitionContext implements MachineDomain {
 	type = SYSTEM
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext ConfigurationLibraryContext implements MachineOptimizationDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
 	type = SYSTEM
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
 
 BoundedContext DiagnosticContext implements DiagnosticDomain {
 	type = APPLICATION
-	domainVisionStatement = ""
+	domainVisionStatement = "This bounded context"
 	responsibilities = ""
 	implementationTechnology = ""
 }
