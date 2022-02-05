@@ -1,0 +1,241 @@
+/* Example Context Map written with 'ContextMapper DSL' */
+ContextMap InsuranceContextMap {
+	type = SYSTEM_LANDSCAPE
+	state = TO_BE
+	/* Add bounded contexts to this context map: */
+	contains RemoteMaintenanceAndTrainingContext
+	contains AugmentedRealityMaintenanceContext
+	contains CustomerRelationManagementContext
+	contains TicketingContext
+	contains AuthenticationContext
+	contains ConfigurationLibraryContext
+	contains OptimizingToolContext
+	contains TelemetryDataAcquisitionContext
+	contains TelemetryDashboardContext
+	contains ResourceManagerUIContext
+	contains SparePartMarketplaceContext
+	contains PredictiveMaintenanceContext
+	contains DiagnosticContext
+	contains MachineContext
+	contains UserContext
+
+	/* Define the context relationships: */
+	TelemetryDataAcquisitionContext -> MachineContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	ResourceManagerUIContext <- UserContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	UserContext-> AuthenticationContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	TelemetryDashboardContext -> ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	SparePartMarketplaceContext -> ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	TicketingContext <- CustomerRelationManagementContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	TicketingContext -> ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	ResourceManagerUIContext -> CustomerRelationManagementContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	RemoteMaintenanceAndTrainingContext <- TicketingContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	AugmentedRealityMaintenanceContext <- RemoteMaintenanceAndTrainingContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	PredictiveMaintenanceContext -> DiagnosticContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	DiagnosticContext -> ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	OptimizingToolContext -> MachineContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	ConfigurationLibraryContext -> MachineContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	MachineContext -> TelemetryDashboardContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	MachineContext -> DiagnosticContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	MachineContext -> PredictiveMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+}
+
+/* Bounded Context Definitions */
+BoundedContext RemoteMaintenanceAndTrainingContext implements RemoteMaintenanceDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext CustomerRelationManagementContext implements UserSupportDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext TicketingContext implements UserSupportDomain {
+	type = SYSTEM
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext AuthenticationContext implements UserDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext UserContext implements UserDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext MachineContext implements MachineDomain {
+	type = SYSTEM
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext TelemetryDataAcquisitionContext implements MachineDomain {
+	type = SYSTEM
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext ConfigurationLibraryContext implements MachineOptimizationDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
+	type = SYSTEM
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+BoundedContext DiagnosticContext implements DiagnosticDomain {
+	type = APPLICATION
+	domainVisionStatement = ""
+	responsibilities = ""
+	implementationTechnology = ""
+}
+
+/* Domain & Subdomain Definitions */
+Domain InsuranceDomain {
+	Subdomain RemoteMaintenanceDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything user support related."
+	}
+
+	Subdomain UserDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything user related."
+	}
+
+	Subdomain MachineDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything machine related."
+	}
+
+	Subdomain UserInterfaceDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to UI."
+	}
+
+	Subdomain DiagnosticDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to machine diagnostic."
+	}
+	
+	Subdomain UserSupportDomain {
+		type = CORE_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to customer support."
+	}
+
+	Subdomain MachineOptimizationDomain {
+		type = SUPPORTING_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to machine optimization."
+	}
+	
+	Subdomain SparePartMarketplaceDomain {
+		type = SUPPORTING_DOMAIN
+		domainVisionStatement = "Subdomain managing everything related to machine spare parts."
+	}
+	
+}
+
