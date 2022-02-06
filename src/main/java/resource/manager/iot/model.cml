@@ -7,6 +7,7 @@ ContextMap InsuranceContextMap {
 	contains AugmentedRealityMaintenanceContext
 	contains LicenceManagerContext
 	contains TicketingContext
+	contains CustomerManagementContext
 	contains AuthenticationContext
 	contains ConfigurationLibraryContext
 	contains OptimizingToolContext
@@ -20,71 +21,75 @@ ContextMap InsuranceContextMap {
 	contains UserContext
 
 	/* Define the context relationships: */
-	TelemetryDataAcquisitionContext -> MachineDataContext {
+	TelemetryDataAcquisitionContext[U,S] -> [D,C]MachineDataContext {
 		implementationTechnology = "MQTT"
 	}
 
-	ResourceManagerUIContext <- UserContext {
+	ResourceManagerUIContext[D] <- [U]UserContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	UserContext <- AuthenticationContext {
+	UserContext[D] <- [U]AuthenticationContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TelemetryDashboardContext -> ResourceManagerUIContext {
+	TelemetryDashboardContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	SparePartMarketplaceContext -> ResourceManagerUIContext {
+	SparePartMarketplaceContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext <- MachineDataContext {
+	TicketingContext[U] -> [D]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext -> ResourceManagerUIContext {
+	TicketingContext[U] -> [D]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	ResourceManagerUIContext <- LicenceManagerContext {
+	CustomerManagementContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	RemoteMaintenanceContext -> ResourceManagerUIContext {
+	ResourceManagerUIContext[D] <- [U]LicenceManagerContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	AugmentedRealityMaintenanceContext -> RemoteMaintenanceContext {
+	RemoteMaintenanceContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	PredictiveMaintenanceContext -> DiagnosticContext {
+	AugmentedRealityMaintenanceContext[U] -> [D]RemoteMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	DiagnosticContext -> ResourceManagerUIContext {
+	PredictiveMaintenanceContext[U] -> [D]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	OptimizingToolContext -> ResourceManagerUIContext {
+	DiagnosticContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	ConfigurationLibraryContext -> OptimizingToolContext {
+	OptimizingToolContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext -> TelemetryDashboardContext {
+	ConfigurationLibraryContext[U] -> [D]OptimizingToolContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext -> DiagnosticContext {
+	MachineDataContext[U] -> [D]TelemetryDashboardContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext -> PredictiveMaintenanceContext {
+	MachineDataContext[U] -> [D]DiagnosticContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	MachineDataContext[U] -> [D]PredictiveMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 }
@@ -111,22 +116,29 @@ BoundedContext LicenceManagerContext implements LicenceManagerDomain {
 	implementationTechnology = "C#"
 }
 
-BoundedContext TicketingContext implements SupportTicketDomain {
+BoundedContext CustomerManagementContext implements CustomerManagementDomain {
+	type = APPLICATION
+	domainVisionStatement = "This bounded context manages the customers."
+	responsibilities = ""
+	implementationTechnology = "C#"
+}
+
+BoundedContext TicketingContext implements CustomerManagementDomain {
 	type = SYSTEM
-	domainVisionStatement = "This bounded context manages the user's support request and generates support tickets."
+	domainVisionStatement = "This bounded context manages the customer's and diagnosis system support request and generates support tickets."
 	responsibilities = ""
 	implementationTechnology = "C#"
 }
 
 BoundedContext AuthenticationContext implements UserDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context manages user's authentication and his role in the organization."
 	responsibilities = ""
 	implementationTechnology = "Azure Active Directory"
 }
 
 BoundedContext UserContext implements UserDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context manages all the information related to a user."
 	responsibilities = ""
 	implementationTechnology = "Azure Active Directory"
@@ -140,27 +152,27 @@ BoundedContext MachineDataContext implements MachineDomain {
 }
 
 BoundedContext TelemetryDataAcquisitionContext implements MachineDomain {
-	type = SYSTEM
+	type = APPLICATION
 	domainVisionStatement = "This bounded context is responsible of the data acquisition from a machine."
 	responsibilities = ""
 	implementationTechnology = "C#, OPC UA client, field gateway"
 }
 
 BoundedContext ConfigurationLibraryContext implements MachineOptimizationDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context helps the user by assisting him in the machine program configuration."
 	responsibilities = ""
 }
 
 BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of the machine production optimization."
 	responsibilities = ""
 }
 
 
 BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
-	type = APPLICATION
+	type = FEATURE
 	domainVisionStatement = "This bounded context is responsible of the telemetry data visualization to the user."
 	responsibilities = ""
 	implementationTechnology = "ReactJS, TSI client"
@@ -174,7 +186,7 @@ BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
 }
 
 BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context manages the spare part orders from the users."
 	responsibilities = ""
 	implementationTechnology = "ReactJS, C#"
@@ -187,7 +199,7 @@ BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
 }
 
 BoundedContext DiagnosticContext implements DiagnosticDomain {
-	type = APPLICATION
+	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of the real time data analysis and anomaly detections."
 	responsibilities = ""
 }
@@ -219,7 +231,7 @@ Domain ResourceManagerIoT {
 		domainVisionStatement = "Subdomain that manages everything related to machine diagnostic."
 	}
 
-	Subdomain SupportTicketDomain {
+	Subdomain CustomerManagementDomain {
 		type = CORE_DOMAIN
 		domainVisionStatement = "Subdomain that manages everything related to customer support."
 	}
