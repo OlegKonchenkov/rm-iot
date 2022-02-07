@@ -29,11 +29,15 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	UserContext[D] <- [U]AuthenticationContext {
+	UserContext[D,CF] <- [U]AuthenticationContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	UserContext[U,S] -> [D,C]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TelemetryDashboardContext[U] -> [D]ResourceManagerUIContext {
+	TelemetryDashboardContext[P] <-> [P]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -41,15 +45,27 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext[U] -> [D]CustomerManagementContext {
+	TicketingContext[U,S] -> [D,C]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext[U] -> [D]DiagnosticContext {
+	TicketingContext[U,S] -> [D,C]DiagnosticContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	TicketingContext[D,CF] <- [U]MachineDataContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
 	CustomerManagementContext[U] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	CustomerManagementContext[U] -> [D,CF]LicenceManagerContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	CustomerManagementContext[U] -> [D,CF]SparePartMarketplaceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -60,12 +76,16 @@ ContextMap InsuranceContextMap {
 	RemoteMaintenanceContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-
-	AugmentedRealityMaintenanceContext[U] -> [D]RemoteMaintenanceContext {
+	
+	RemoteMaintenanceContext[D,CF] <- [U]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	PredictiveMaintenanceContext[U] -> [D]DiagnosticContext {
+	AugmentedRealityMaintenanceContext[U,S] -> [D,C]RemoteMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	PredictiveMaintenanceContext[U,S] -> [D,C]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -77,19 +97,19 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	ConfigurationLibraryContext[U] -> [D]OptimizingToolContext {
+	ConfigurationLibraryContext[U,S] -> [D,C]OptimizingToolContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D]TelemetryDashboardContext {
+	MachineDataContext[U] -> [D,CF]TelemetryDashboardContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D]DiagnosticContext {
+	MachineDataContext[U] -> [D,CF]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D]PredictiveMaintenanceContext {
+	MachineDataContext[U] -> [D,CF]PredictiveMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 }
