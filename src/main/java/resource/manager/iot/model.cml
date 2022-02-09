@@ -122,7 +122,7 @@ ContextMap InsuranceContextMap {
 BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the remote connection to a machine"
-	responsibilities = "RemoteMaintenance, SupportTecnitian, VPNTunnel"
+	responsibilities = "RemoteMaintenance, SupportTecnitian, MaintenanceChat, VPNTunnel"
 	implementationTechnology = "C#, Apache Guacamole, OpenVPN"
 	Aggregate RemoteMaintenances {
 		Entity RemoteMaintenance {
@@ -134,7 +134,7 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 			- CustomerData customerData
 			- List<MachineStatus> machineStatus
 			- List<SupportTecnitian> supportTecnitians
-			- ChatData chat
+			- MaintenanceChat chat
 			- VPNTunnel vpnTunnel
 		}
 		ValueObject CustomerData {
@@ -154,7 +154,7 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 			String text
 			Date timestamp
 		}
-		ValueObject ChatData{
+		Entity MaintenanceChat{
 			int chatId
 			List<Users> participants
 			Date startTime
