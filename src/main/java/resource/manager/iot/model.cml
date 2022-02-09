@@ -57,15 +57,15 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U] -> [D]ResourceManagerUIContext {
+	CustomerManagementContext[U, OHS] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U] -> [D, CF]LicenceManagerContext {
+	CustomerManagementContext[U, OHS] -> [D, CF]LicenceManagerContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U] -> [D, CF]SparePartMarketplaceContext {
+	CustomerManagementContext[U, OHS] -> [D, CF]SparePartMarketplaceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -77,7 +77,7 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	RemoteMaintenanceContext[D, CF] <- [U]CustomerManagementContext {
+	RemoteMaintenanceContext[D, CF] <- [U, OHS]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -112,8 +112,8 @@ ContextMap InsuranceContextMap {
 	CloudGatewayContext[U, OHS] -> [D, CF]PredictiveMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
-	CloudGatewayContext[U, OHS] -> [D, CF]ResourceManagerUIContext {
+
+	CloudGatewayContext[U, OHS] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 }
@@ -122,7 +122,7 @@ ContextMap InsuranceContextMap {
 BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the remote connection to a machine"
-	responsibilities = ""
+	responsibilities = "RemoteMaintenance, SupportTecnitian, VPNTunnel"
 	implementationTechnology = "C#, Apache Guacamole, OpenVPN"
 	Aggregate RemoteMaintenances {
 		Entity RemoteMaintenance {
@@ -177,7 +177,7 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the remote connection to a machine allowing the use of augmented reality."
-	responsibilities = ""
+	responsibilities = "AugmentedRealityMaintenance, AugmentedRealityDevice"
 	Aggregate AugmentedRealityMaintenances {
 		Entity AugmentedRealityMaintenance{
 			aggregateRoot
@@ -195,7 +195,7 @@ BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDo
 BoundedContext LicenceManagerContext implements LicenceManagerDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of services' licences generation and their validity."
-	responsibilities = ""
+	responsibilities = "ServiceLicense, ServiceSystem"
 	implementationTechnology = "C#"
 	Aggregate ServiceLicenses {
 		Entity ServiceLicense{
@@ -205,6 +205,7 @@ BoundedContext LicenceManagerContext implements LicenceManagerDomain {
 			- Customer customer
 			- ServiceSystem service
 			int licenceId
+			String licenceCode
 		}
 		Entity ServiceSystem {
 			int serviceSystemId
@@ -218,7 +219,7 @@ BoundedContext LicenceManagerContext implements LicenceManagerDomain {
 BoundedContext CustomerManagementContext implements CustomerManagementDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the customers."
-	responsibilities = ""
+	responsibilities = "Customer, CustomerAddress"
 	implementationTechnology = "C#"
 	Aggregate Customers {
 		Entity Customer {
@@ -230,8 +231,6 @@ BoundedContext CustomerManagementContext implements CustomerManagementDomain {
 			String ^email
 			- Tickets tickets
 			- List<CustomerAddress> addresses
-			def AddressId createAddress(@Address address);
-			def boolean updateUser(String firstname, String lastname);
 		}
 		Entity CustomerAddress {
 			String street
@@ -247,7 +246,7 @@ BoundedContext CustomerManagementContext implements CustomerManagementDomain {
 BoundedContext TicketingContext implements CustomerManagementDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages the customer's and diagnosis system support request and generates support tickets."
-	responsibilities = ""
+	responsibilities = "SupportTicket"
 	implementationTechnology = "C#"
 	Aggregate SupportTickets {
 		Entity SupportTicket {
@@ -268,7 +267,7 @@ BoundedContext TicketingContext implements CustomerManagementDomain {
 BoundedContext AuthenticationContext implements AuthenticationDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages user's authentication and his role in the organization."
-	responsibilities = ""
+	responsibilities = "UserAccount"
 	implementationTechnology = "Azure Active Directory"
 	Aggregate Acounts {
 		Entity UserAccount {
@@ -312,16 +311,17 @@ BoundedContext UserContext implements UserDomain {
 BoundedContext CloudGatewayContext implements MachineDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages all the tecnical and telemetry data related to a machine."
-	responsibilities = ""
+	responsibilities = "MachineData"
 	implementationTechnology = "Azure Time Series Insights"
 	Aggregate MachinesData{
 		Entity MachineData{
 			aggregateRoot
+			int customerId
+			int machineId
 			Location location
 			String description
 			Date purchaseDate
-			int customerId
-			int machineId
+			- Machine machine
 			- List<Sensor> sensorStatus
 		}
 	}
@@ -330,7 +330,7 @@ BoundedContext CloudGatewayContext implements MachineDomain {
 BoundedContext FieldGatewayContext implements MachineDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context is responsible of the data acquisition from a machine."
-	responsibilities = ""
+	responsibilities = "Sensor, Machine"
 	implementationTechnology = "C#, OPC UA client, field gateway"
 	Aggregate Sensors{
 		Entity Sensor{
@@ -369,7 +369,7 @@ BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
 BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
 	type = FEATURE
 	domainVisionStatement = "This bounded context is responsible of the telemetry data visualization to the user."
-	responsibilities = ""
+	responsibilities = "TelemetryData, SensorData"
 	implementationTechnology = "ReactJS, TSI client"
 	Aggregate TelemetryDatas{
 		Entity TelemetryData{
@@ -396,7 +396,7 @@ BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
 BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context represents the main user interface. It's the access point to the application and it's related to almost all the other bounded contexts."
-	responsibilities = ""
+	responsibilities = "ResourceManagerUI"
 	implementationTechnology = "ReactJS"
 	Aggregate ResourceManagerUI{
 		Entity ResourceManagerUI{
@@ -418,7 +418,7 @@ BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
 BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages the spare part orders from the users."
-	responsibilities = ""
+	responsibilities = "ShoppingCart, Product, Order, Payment"
 	implementationTechnology = "ReactJS, C#"
 	Aggregate ShoppingCarts {
 		Entity ShoppingCart{
@@ -455,13 +455,20 @@ BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain
 		enum PaymentState {
 			SCHEDULED, PERFORMED
 		}
+		Entity Shipping{
+			int shippingId
+			Date shippingDate
+			Location origin
+			Location destination
+			String shippingInfo
+		}
 	}
 }
 
 BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages the predictive maintenance by analyzing the machine generated data."
-	responsibilities = ""
+	responsibilities = "PredictiveMaintenance"
 	Aggregate PredictiveMaintenance{
 		Entity PredictiveMaintenance{
 			aggregateRoot
@@ -475,12 +482,17 @@ BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
 BoundedContext DiagnosticContext implements DiagnosticDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of the real time data analysis and anomaly detections."
-	responsibilities = ""
+	responsibilities = "DiagnosticData, Malfunction"
 	Aggregate DiagnosticsData{
 		Entity DiagnosticData{
 			aggregateRoot
 			String description
 			int customerId
+			int machineId
+			- List<Malfunction> malfunction
+		}
+		Entity Malfunction{
+			int malfunctionId
 			- MachineData machineData
 		}
 	}
