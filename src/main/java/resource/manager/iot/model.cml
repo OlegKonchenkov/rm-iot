@@ -11,17 +11,17 @@ ContextMap InsuranceContextMap {
 	contains AuthenticationContext
 	contains ConfigurationLibraryContext
 	contains OptimizingToolContext
-	contains TelemetryDataAcquisitionContext
+	contains FieldGatewayContext
 	contains TelemetryDashboardContext
 	contains ResourceManagerUIContext
 	contains SparePartMarketplaceContext
 	contains PredictiveMaintenanceContext
 	contains DiagnosticContext
-	contains MachineDataContext
+	contains CloudGatewayContext
 	contains UserContext
 
 	/* Define the context relationships: */
-	TelemetryDataAcquisitionContext[U,S] -> [D,C]MachineDataContext {
+	FieldGatewayContext[U, S] -> [D, C]CloudGatewayContext {
 		implementationTechnology = "MQTT"
 	}
 
@@ -29,11 +29,11 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	UserContext[D,CF] <- [U]AuthenticationContext {
+	UserContext[D, CF] <- [U, OHS]AuthenticationContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
-	UserContext[U,S] -> [D,C]CustomerManagementContext {
+
+	UserContext[U, S] -> [D, C]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -45,15 +45,15 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext[U,S] -> [D,C]CustomerManagementContext {
+	TicketingContext[U, S] -> [D, C]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext[U,S] -> [D,C]DiagnosticContext {
+	TicketingContext[U, S] -> [D, C]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
-	TicketingContext[D,CF] <- [U]MachineDataContext {
+
+	TicketingContext[D, CF] <- [U, OHS]CloudGatewayContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -61,11 +61,11 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U] -> [D,CF]LicenceManagerContext {
+	CustomerManagementContext[U] -> [D, CF]LicenceManagerContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
-	CustomerManagementContext[U] -> [D,CF]SparePartMarketplaceContext {
+
+	CustomerManagementContext[U] -> [D, CF]SparePartMarketplaceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -76,16 +76,16 @@ ContextMap InsuranceContextMap {
 	RemoteMaintenanceContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
-	RemoteMaintenanceContext[D,CF] <- [U]CustomerManagementContext {
+
+	RemoteMaintenanceContext[D, CF] <- [U]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	AugmentedRealityMaintenanceContext[U,S] -> [D,C]RemoteMaintenanceContext {
+	AugmentedRealityMaintenanceContext[U, S] -> [D, C]RemoteMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	PredictiveMaintenanceContext[U,S] -> [D,C]DiagnosticContext {
+	PredictiveMaintenanceContext[U, S] -> [D, C]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -97,19 +97,23 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	ConfigurationLibraryContext[U,S] -> [D,C]OptimizingToolContext {
+	ConfigurationLibraryContext[U, S] -> [D, C]OptimizingToolContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D,CF]TelemetryDashboardContext {
+	CloudGatewayContext[U, OHS] -> [D, CF]TelemetryDashboardContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D,CF]DiagnosticContext {
+	CloudGatewayContext[U, OHS] -> [D, CF]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	MachineDataContext[U] -> [D,CF]PredictiveMaintenanceContext {
+	CloudGatewayContext[U, OHS] -> [D, CF]PredictiveMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	CloudGatewayContext[U, OHS] -> [D, CF]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 }
@@ -120,13 +124,72 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 	domainVisionStatement = "This bounded context manages the remote connection to a machine"
 	responsibilities = ""
 	implementationTechnology = "C#, Apache Guacamole, OpenVPN"
-	
+	Aggregate RemoteMaintenances {
+		Entity RemoteMaintenance {
+			aggregateRoot
+			Date creationDate
+			Date resolutionDate
+			String finalReport
+			int maintenanceId
+			- CustomerData customerData
+			- List<MachineStatus> machineStatus
+			- List<SupportTecnitian> supportTecnitians
+			- ChatData chat
+			- VPNTunnel vpnTunnel
+		}
+		ValueObject CustomerData {
+			String username
+			String name
+			String phoneNumber
+		}
+		ValueObject MachineStatus{
+			String sensorName
+			String sensorStatus
+			String alarm
+			int errorCode
+			Date timestamp
+		}
+		ValueObject ChatMessage{
+			String username
+			String text
+			Date timestamp
+		}
+		ValueObject ChatData{
+			int chatId
+			List<Users> participants
+			Date startTime
+			Date endTime
+			- List<ChatMessage> chatMessages
+		}
+		Entity SupportTecnitian{
+			String username
+			String name
+			String phoneNumber
+		}
+		Entity VPNTunnel{
+			Date creationTime
+			Date closureTime
+			int tunnelID
+		}
+	}
 }
 
 BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the remote connection to a machine allowing the use of augmented reality."
 	responsibilities = ""
+	Aggregate AugmentedRealityMaintenances {
+		Entity AugmentedRealityMaintenance{
+			aggregateRoot
+			int augmentedRealityMaintenanceId
+			- AugmentedRealityDevice device
+		}
+		Entity AugmentedRealityDevice {
+			int deviceId
+			int customerId
+			String description
+		}
+	}
 }
 
 BoundedContext LicenceManagerContext implements LicenceManagerDomain {
@@ -134,6 +197,22 @@ BoundedContext LicenceManagerContext implements LicenceManagerDomain {
 	domainVisionStatement = "This bounded context is responsible of services' licences generation and their validity."
 	responsibilities = ""
 	implementationTechnology = "C#"
+	Aggregate ServiceLicenses {
+		Entity ServiceLicense{
+			aggregateRoot
+			Date startDate
+			Date expireDate
+			- Customer customer
+			- ServiceSystem service
+			int licenceId
+		}
+		Entity ServiceSystem {
+			int serviceSystemId
+			BigDecimal price
+			Date duration
+			String description
+		}
+	}
 }
 
 BoundedContext CustomerManagementContext implements CustomerManagementDomain {
@@ -141,6 +220,28 @@ BoundedContext CustomerManagementContext implements CustomerManagementDomain {
 	domainVisionStatement = "This bounded context manages the customers."
 	responsibilities = ""
 	implementationTechnology = "C#"
+	Aggregate Customers {
+		Entity Customer {
+			aggregateRoot
+			String firstname
+			String lastname
+			String username
+			String phoneNumber
+			String ^email
+			- Tickets tickets
+			- List<CustomerAddress> addresses
+			def AddressId createAddress(@Address address);
+			def boolean updateUser(String firstname, String lastname);
+		}
+		Entity CustomerAddress {
+			String street
+			int postalCode
+			String city
+		}
+		ValueObject Tickets{
+			- List<SupportTicket> tickets
+		}
+	}
 }
 
 BoundedContext TicketingContext implements CustomerManagementDomain {
@@ -148,34 +249,109 @@ BoundedContext TicketingContext implements CustomerManagementDomain {
 	domainVisionStatement = "This bounded context manages the customer's and diagnosis system support request and generates support tickets."
 	responsibilities = ""
 	implementationTechnology = "C#"
+	Aggregate SupportTickets {
+		Entity SupportTicket {
+			aggregateRoot
+			int ticketId
+			int customerId
+			int machineId
+			Date creationDate
+			String description
+			- TicketPriority priority
+		}
+		enum TicketPriority {
+			SMALL,MODERATE,URGENT
+		}
+	}
 }
 
-BoundedContext AuthenticationContext implements UserDomain {
+BoundedContext AuthenticationContext implements AuthenticationDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages user's authentication and his role in the organization."
 	responsibilities = ""
 	implementationTechnology = "Azure Active Directory"
+	Aggregate Acounts {
+		Entity UserAccount {
+			aggregateRoot
+			String username
+			- AccountRole role
+		}
+		enum AccountRole {
+			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECNITIAN
+		}
+	}
 }
 
 BoundedContext UserContext implements UserDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages all the information related to a user."
-	responsibilities = ""
 	implementationTechnology = "Azure Active Directory"
+	responsibilities = "Users, Addresses"
+	Aggregate Users {
+		Entity User {
+			aggregateRoot
+			String firstname
+			String lastname
+			String username
+			- UserRole role
+			- List<Address> addresses
+			def AddressId createAddress(@Address address);
+			def boolean updateUser(String firstname, String lastname);
+		}
+		enum UserRole {
+			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECNITIAN
+		}
+		Entity Address {
+			String street
+			int postalCode
+			String city
+		}
+	}
 }
 
-BoundedContext MachineDataContext implements MachineDomain {
+BoundedContext CloudGatewayContext implements MachineDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages all the tecnical and telemetry data related to a machine."
 	responsibilities = ""
 	implementationTechnology = "Azure Time Series Insights"
+	Aggregate MachinesData{
+		Entity MachineData{
+			aggregateRoot
+			Location location
+			String description
+			Date purchaseDate
+			int customerId
+			int machineId
+			- List<Sensor> sensorStatus
+		}
+	}
 }
 
-BoundedContext TelemetryDataAcquisitionContext implements MachineDomain {
+BoundedContext FieldGatewayContext implements MachineDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context is responsible of the data acquisition from a machine."
 	responsibilities = ""
 	implementationTechnology = "C#, OPC UA client, field gateway"
+	Aggregate Sensors{
+		Entity Sensor{
+			aggregateRoot
+			String sensorName
+			String sensorStatus
+			String alarm
+			String sensorValue
+			String sensorType
+			int errorCode
+			Date timestamp
+			- Machine machine
+		}
+		Entity Machine{
+			int machineId
+			int customerId
+			Location location
+			String description
+			Date purchaseDate
+		}
+	}
 }
 
 BoundedContext ConfigurationLibraryContext implements MachineOptimizationDomain {
@@ -190,12 +366,31 @@ BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
 	responsibilities = ""
 }
 
-
 BoundedContext TelemetryDashboardContext implements UserInterfaceDomain {
 	type = FEATURE
 	domainVisionStatement = "This bounded context is responsible of the telemetry data visualization to the user."
 	responsibilities = ""
 	implementationTechnology = "ReactJS, TSI client"
+	Aggregate TelemetryDatas{
+		Entity TelemetryData{
+			aggregateRoot
+			String description
+			int customerId
+			- SensorData sensorData
+			int enviromnemtId
+		}
+		ValueObject SensorStatus{
+			String sensorName
+			String sensorStatus
+			String sensorType
+			String sensorValue
+			Date timestamp
+		}
+		Entity SensorData{
+			int sensorId
+			- List<SensorStatus> sensorStatus
+		}
+	}
 }
 
 BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
@@ -203,6 +398,21 @@ BoundedContext ResourceManagerUIContext implements UserInterfaceDomain {
 	domainVisionStatement = "This bounded context represents the main user interface. It's the access point to the application and it's related to almost all the other bounded contexts."
 	responsibilities = ""
 	implementationTechnology = "ReactJS"
+	Aggregate ResourceManagerUI{
+		Entity ResourceManagerUI{
+			aggregateRoot
+			- User user
+			- ShoppingCart cart
+			- List<Product> products
+			- List<Order> orders
+			- List<RemoteMaintenance> maintenances
+			- List<TelemetryData> telemetryData
+			- List<DiagnosticData> diagnosticData
+			- List<MachineData> rawMachineData
+			- Tickets supportTickets
+			- List<ServiceLicense> licenses
+		}
+	}
 }
 
 BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain {
@@ -210,18 +420,70 @@ BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain
 	domainVisionStatement = "This bounded context manages the spare part orders from the users."
 	responsibilities = ""
 	implementationTechnology = "ReactJS, C#"
+	Aggregate ShoppingCarts {
+		Entity ShoppingCart{
+			aggregateRoot
+			int shoppingCartId
+			- Customer customer
+			- List<Product> products
+		}
+	}
+	Aggregate Products {
+		Entity Product {
+			aggregateRoot
+			int productId
+			String productName
+			BigDecimal price
+		}
+	}
+	Aggregate Orders {
+		Entity Order {
+			aggregateRoot
+			int orderId
+			Date creationDate
+			- Customer customer
+			- ShoppingCart cart
+			BigDecimal totalPrice
+			- Payment payment
+		}
+		Entity Payment{
+			int paymentId
+			Date paymentDate
+			Date paymentDeadline
+			- PaymentState paymentState
+		}
+		enum PaymentState {
+			SCHEDULED, PERFORMED
+		}
+	}
 }
 
 BoundedContext PredictiveMaintenanceContext implements DiagnosticDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages the predictive maintenance by analyzing the machine generated data."
 	responsibilities = ""
+	Aggregate PredictiveMaintenance{
+		Entity PredictiveMaintenance{
+			aggregateRoot
+			String description
+			int customerId
+			- MachineData machineData
+		}
+	}
 }
 
 BoundedContext DiagnosticContext implements DiagnosticDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of the real time data analysis and anomaly detections."
 	responsibilities = ""
+	Aggregate DiagnosticsData{
+		Entity DiagnosticData{
+			aggregateRoot
+			String description
+			int customerId
+			- MachineData machineData
+		}
+	}
 }
 
 /* Domain & Subdomain Definitions */
@@ -262,13 +524,18 @@ Domain ResourceManagerIoT {
 	}
 
 	Subdomain MachineOptimizationDomain {
-		type = SUPPORTING_DOMAIN
+		type = CORE_DOMAIN
 		domainVisionStatement = "Subdomain that manages everything related to machine optimization."
 	}
 
 	Subdomain SparePartMarketplaceDomain {
 		type = SUPPORTING_DOMAIN
 		domainVisionStatement = "Subdomain that manages everything related to machine spare parts marketplace."
+	}
+
+	Subdomain AuthenticationDomain {
+		type = GENERIC_SUBDOMAIN
+		domainVisionStatement = "Subdomain that manages everything related to user authentication and authorization"
 	}
 
 }
