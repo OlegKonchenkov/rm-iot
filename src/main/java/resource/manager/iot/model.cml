@@ -7,41 +7,92 @@ ContextMap InsuranceContextMap {
 	contains AugmentedRealityMaintenanceContext
 	contains LicenceManagerContext
 	contains TicketingContext
-	contains CustomerManagementContext
+	contains CustomerManagementContext 
 	contains AuthenticationContext
-	contains ConfigurationLibraryContext
 	contains OptimizingToolContext
-	contains FieldGatewayContext
+	contains TelemetryDataAcquisitionContext
 	contains TelemetryDashboardContext
 	contains ResourceManagerUIContext
 	contains SparePartMarketplaceContext
 	contains PredictiveMaintenanceContext
 	contains DiagnosticContext
-	contains CloudGatewayContext
+	contains MachineManagementContext
 	contains UserContext
 
 	/* Define the context relationships: */
-	FieldGatewayContext[U, S] -> [D, C]CloudGatewayContext {
+	AugmentedRealityMaintenanceContext[U, S] -> [D, C]RemoteMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	MachineManagementContext[U, OHS, PL] -> [D, CF]TicketingContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	MachineManagementContext[U, OHS, PL] -> [D, CF]TelemetryDashboardContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	MachineManagementContext[U, OHS, PL] -> [D, CF]DiagnosticContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	MachineManagementContext[U, OHS, PL] -> [D, CF]PredictiveMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	MachineManagementContext[U, OHS, PL] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	CustomerManagementContext[U, OHS, PL] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	CustomerManagementContext[U, OHS, PL] -> [D, CF]LicenceManagerContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	CustomerManagementContext[U, OHS, PL] -> [D, CF]SparePartMarketplaceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	CustomerManagementContext[U, OHS, PL] -> [D, CF]RemoteMaintenanceContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	DiagnosticContext[U, PL] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+
+	TelemetryDataAcquisitionContext[U, S] -> [D, C]MachineManagementContext {
 		implementationTechnology = "MQTT"
 	}
-
-	ResourceManagerUIContext[D] <- [U]UserContext {
+	
+	LicenceManagerContext[U, PL] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+ 
+	OptimizingToolContext[U, PL] -> [D]MachineManagementContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	OptimizingToolContext[U, PL] -> [D]ResourceManagerUIContext {
+		implementationTechnology = "RESTfulHTTP"
+	}
+	
+	PredictiveMaintenanceContext[U, S] -> [D, C]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	UserContext[D, CF] <- [U, OHS]AuthenticationContext {
+	RemoteMaintenanceContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-
-	UserContext[U, S] -> [D, C]CustomerManagementContext {
+	
+	SparePartMarketplaceContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
 	TelemetryDashboardContext[P] <-> [P]ResourceManagerUIContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	SparePartMarketplaceContext[U] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
@@ -53,67 +104,15 @@ ContextMap InsuranceContextMap {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	TicketingContext[D, CF] <- [U, OHS]CloudGatewayContext {
+	UserContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U, OHS] -> [D]ResourceManagerUIContext {
+	UserContext[D, CF] <- [U, OHS]AuthenticationContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 
-	CustomerManagementContext[U, OHS] -> [D, CF]LicenceManagerContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	CustomerManagementContext[U, OHS] -> [D, CF]SparePartMarketplaceContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	ResourceManagerUIContext[D] <- [U]LicenceManagerContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	RemoteMaintenanceContext[U] -> [D]ResourceManagerUIContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	RemoteMaintenanceContext[D, CF] <- [U, OHS]CustomerManagementContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	AugmentedRealityMaintenanceContext[U, S] -> [D, C]RemoteMaintenanceContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	PredictiveMaintenanceContext[U, S] -> [D, C]DiagnosticContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	DiagnosticContext[U] -> [D]ResourceManagerUIContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	OptimizingToolContext[U] -> [D]ResourceManagerUIContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	ConfigurationLibraryContext[U, S] -> [D, C]OptimizingToolContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	CloudGatewayContext[U, OHS] -> [D, CF]TelemetryDashboardContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	CloudGatewayContext[U, OHS] -> [D, CF]DiagnosticContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	CloudGatewayContext[U, OHS] -> [D, CF]PredictiveMaintenanceContext {
-		implementationTechnology = "RESTfulHTTP"
-	}
-
-	CloudGatewayContext[U, OHS] -> [D]ResourceManagerUIContext {
+	UserContext[U, S] -> [D, C]CustomerManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
 }
@@ -308,7 +307,7 @@ BoundedContext UserContext implements UserDomain {
 	}
 }
 
-BoundedContext CloudGatewayContext implements MachineDomain {
+BoundedContext MachineManagementContext implements MachineDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages all the tecnical and telemetry data related to a machine."
 	responsibilities = "MachineData"
@@ -327,7 +326,7 @@ BoundedContext CloudGatewayContext implements MachineDomain {
 	}
 }
 
-BoundedContext FieldGatewayContext implements MachineDomain {
+BoundedContext TelemetryDataAcquisitionContext implements MachineDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context is responsible of the data acquisition from a machine."
 	responsibilities = "Sensor, Machine"
@@ -352,12 +351,6 @@ BoundedContext FieldGatewayContext implements MachineDomain {
 			Date purchaseDate
 		}
 	}
-}
-
-BoundedContext ConfigurationLibraryContext implements MachineOptimizationDomain {
-	type = SYSTEM
-	domainVisionStatement = "This bounded context helps the user by assisting him in the machine program configuration."
-	responsibilities = ""
 }
 
 BoundedContext OptimizingToolContext implements MachineOptimizationDomain {
