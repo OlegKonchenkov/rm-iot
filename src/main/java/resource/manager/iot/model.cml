@@ -191,7 +191,7 @@ BoundedContext AugmentedRealityMaintenanceContext implements RemoteMaintenanceDo
 	}
 }
 
-BoundedContext LicenceManagerContext implements LicenceManagerDomain {
+BoundedContext LicenceManagerContext implements CustomerManagementDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context is responsible of services' licences generation and their validity."
 	responsibilities = "ServiceLicense, ServiceSystem"
@@ -263,7 +263,7 @@ BoundedContext TicketingContext implements CustomerManagementDomain {
 	}
 }
 
-BoundedContext AuthenticationContext implements AuthenticationDomain {
+BoundedContext AuthenticationContext implements UserDomain {
 	type = SYSTEM
 	domainVisionStatement = "This bounded context manages user's authentication and his role in the organization."
 	responsibilities = "UserAccount"
@@ -498,11 +498,6 @@ Domain ResourceManagerIoT {
 		domainVisionStatement = "Subdomain that manages everything user support related."
 	}
 
-	Subdomain UserDomain {
-		type = CORE_DOMAIN
-		domainVisionStatement = "Subdomain that manages everything user related."
-	}
-
 	Subdomain MachineDomain {
 		type = CORE_DOMAIN
 		domainVisionStatement = "Subdomain that manages everything machine related."
@@ -520,12 +515,7 @@ Domain ResourceManagerIoT {
 
 	Subdomain CustomerManagementDomain {
 		type = CORE_DOMAIN
-		domainVisionStatement = "Subdomain that manages everything related to customer support."
-	}
-
-	Subdomain LicenceManagerDomain {
-		type = CORE_DOMAIN
-		domainVisionStatement = "Subdomain that manages everything related to service's licence management."
+		domainVisionStatement = "Subdomain that manages everything related to customer relationship management."
 	}
 
 	Subdomain MachineOptimizationDomain {
@@ -538,10 +528,9 @@ Domain ResourceManagerIoT {
 		domainVisionStatement = "Subdomain that manages everything related to machine spare parts marketplace."
 	}
 
-	Subdomain AuthenticationDomain {
+	Subdomain UserDomain {
 		type = GENERIC_SUBDOMAIN
-		domainVisionStatement = "Subdomain that manages everything related to user authentication and authorization"
+		domainVisionStatement = "Subdomain that manages user related data and user authentication and authorization."
 	}
-
 }
 
