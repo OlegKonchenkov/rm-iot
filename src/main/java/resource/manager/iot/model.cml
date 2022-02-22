@@ -121,7 +121,7 @@ ContextMap InsuranceContextMap {
 BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 	type = APPLICATION
 	domainVisionStatement = "This bounded context manages the remote connection to a machine"
-	responsibilities = "RemoteMaintenance, SupportTecnitian, MaintenanceChat, VPNTunnel"
+	responsibilities = "RemoteMaintenance, SupportTechnitian, MaintenanceChat, VPNTunnel"
 	implementationTechnology = "C#, Apache Guacamole, OpenVPN"
 	Aggregate RemoteMaintenances {
 		Entity RemoteMaintenance {
@@ -132,7 +132,7 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 			int maintenanceId
 			- CustomerData customerData
 			- List<MachineStatus> machineStatus
-			- List<SupportTecnitian> supportTecnitians
+			- List<SupportTechnitian> supportTechnitians
 			- MaintenanceChat chat
 			- VPNTunnel vpnTunnel
 		}
@@ -160,7 +160,7 @@ BoundedContext RemoteMaintenanceContext implements RemoteMaintenanceDomain {
 			Date endTime
 			- List<ChatMessage> chatMessages
 		}
-		Entity SupportTecnitian{
+		Entity SupportTechnitian{
 			String username
 			String name
 			String phoneNumber
@@ -275,7 +275,7 @@ BoundedContext AuthenticationContext implements UserDomain {
 			- AccountRole role
 		}
 		enum AccountRole {
-			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECNITIAN
+			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECHNITIAN
 		}
 	}
 }
@@ -297,7 +297,7 @@ BoundedContext UserContext implements UserDomain {
 			def boolean updateUser(String firstname, String lastname);
 		}
 		enum UserRole {
-			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECNITIAN
+			CUSTOMER,ADMINISTRATOR,RATAIL,RETEIL_SUPPORT,SUPPORT_TECHNITIAN
 		}
 		Entity Address {
 			String street
