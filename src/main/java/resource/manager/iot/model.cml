@@ -7,7 +7,7 @@ ContextMap InsuranceContextMap {
 	contains AugmentedRealityMaintenanceContext
 	contains LicenceManagerContext
 	contains TicketingContext
-	contains CustomerManagementContext 
+	contains CustomerManagementContext
 	contains AuthenticationContext
 	contains OptimizingToolContext
 	contains TelemetryDataAcquisitionContext
@@ -23,11 +23,11 @@ ContextMap InsuranceContextMap {
 	AugmentedRealityMaintenanceContext[U, S] -> [D, C]RemoteMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	MachineManagementContext[U, OHS, PL] -> [D, CF]TicketingContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	MachineManagementContext[U, OHS, PL] -> [D, CF]TelemetryDashboardContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
@@ -55,11 +55,11 @@ ContextMap InsuranceContextMap {
 	CustomerManagementContext[U, OHS, PL] -> [D, CF]SparePartMarketplaceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	CustomerManagementContext[U, OHS, PL] -> [D, CF]RemoteMaintenanceContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	DiagnosticContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
@@ -67,19 +67,19 @@ ContextMap InsuranceContextMap {
 	TelemetryDataAcquisitionContext[U, S] -> [D, C]MachineManagementContext {
 		implementationTechnology = "MQTT"
 	}
-	
+
 	LicenceManagerContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
- 
+
 	OptimizingToolContext[U, PL] -> [D]MachineManagementContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	OptimizingToolContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	PredictiveMaintenanceContext[U, S] -> [D, C]DiagnosticContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
@@ -87,7 +87,7 @@ ContextMap InsuranceContextMap {
 	RemoteMaintenanceContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
-	
+
 	SparePartMarketplaceContext[U, PL] -> [D]ResourceManagerUIContext {
 		implementationTechnology = "RESTfulHTTP"
 	}
@@ -238,6 +238,17 @@ BoundedContext CustomerManagementContext implements CustomerManagementDomain {
 		}
 		ValueObject Tickets{
 			- List<SupportTicket> tickets
+		}
+	}
+	Aggregate Payments{
+		Entity Payment{
+			int paymentId
+			Date paymentDate
+			Date paymentDeadline
+			- PaymentState paymentState
+		}
+		enum PaymentState {
+			SCHEDULED, PERFORMED
 		}
 	}
 }
@@ -439,15 +450,6 @@ BoundedContext SparePartMarketplaceContext implements SparePartMarketplaceDomain
 			BigDecimal totalPrice
 			- Payment payment
 		}
-		Entity Payment{
-			int paymentId
-			Date paymentDate
-			Date paymentDeadline
-			- PaymentState paymentState
-		}
-		enum PaymentState {
-			SCHEDULED, PERFORMED
-		}
 		Entity Shipping{
 			int shippingId
 			Date shippingDate
@@ -504,7 +506,7 @@ Domain ResourceManagerIoT {
 	}
 
 	Subdomain UserInterfaceDomain {
-		type = CORE_DOMAIN
+		type = SUPPORTING_DOMAIN
 		domainVisionStatement = "Subdomain that manages everything related to the user interface."
 	}
 
@@ -532,5 +534,6 @@ Domain ResourceManagerIoT {
 		type = GENERIC_SUBDOMAIN
 		domainVisionStatement = "Subdomain that manages user related data and user authentication and authorization."
 	}
+
 }
 
